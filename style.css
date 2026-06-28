@@ -319,7 +319,7 @@ h1, h2, h3, h4 {
 }
 
 .main-header {
-  height: 90px;
+  height: 115px;
   background: rgba(5, 5, 5, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -344,7 +344,7 @@ h1, h2, h3, h4 {
 }
 
 .logo-img {
-  height: 78px;
+  height: 100px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
@@ -356,7 +356,7 @@ h1, h2, h3, h4 {
 }
 
 .logo-img-footer {
-  height: 66px;
+  height: 85px;
   width: auto;
   max-width: 100%;
   object-fit: contain;
@@ -389,7 +389,7 @@ h1, h2, h3, h4 {
    ========================================================================== */
 .hero-section {
   position: relative;
-  min-height: calc(100vh - 110px);
+  min-height: calc(100vh - 145px);
   display: flex;
   align-items: center;
   overflow: hidden;
