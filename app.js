@@ -14,7 +14,8 @@
       category: "nonwoven",
       categoryDisplay: "Non-Woven Bags",
       size: "16 x 20 inches",
-      image: "loop_handle_bag.png",
+      image: "loop_handle_bag_black.png",
+      images: ["loop_handle_bag_black.png", "loop_handle_bag_green.png", "loop_handle_bag_yellow.png", "loop_handle_bag_teal.png", "loop_handle_bag.png"],
       description: "Durable and reusable eco-friendly shopping carrier featuring ultrasonically sealed soft loop handles. Ideal for supermarkets and retail showrooms.",
       specs: {
         "Material": "Spunbond Non-Woven Polypropylene",
@@ -200,7 +201,7 @@
 
   // --- WHATSAPP TEXT BUILDER ---
   function buildWhatsAppUrl(product) {
-    const message = `Hello Shiv Enterprise!\n\nI am interested in placing a B2B wholesale order for:\n\n*Product:* ${product.name}\n*Category:* ${product.categoryDisplay}\n*Dimensions/Size:* ${product.size}\n*Requested Quantity:* (Min. Order 500 pcs)\n\nPlease provide corporate wholesale pricing tiers and delivery logistics terms.\n\nThank you!`;
+    const message = `Hello Shiv Enterprise!\n\nI am interested in placing a B2B wholesale order for:\n\n*Product:* ${product.name}\n*Category:* ${product.categoryDisplay}\n*Dimensions/Size:* ${product.size}\n*Requested Quantity:* (Min. Order 250 pcs)\n\nPlease provide corporate wholesale pricing tiers and delivery logistics terms.\n\nThank you!`;
     const encodedMessage = encodeURIComponent(message);
     return `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
   }
@@ -208,7 +209,7 @@
   // --- EMAIL TEXT BUILDER ---
   function buildEmailUrl(product) {
     const subject = encodeURIComponent(`B2B Wholesale Enquiry: ${product.name}`);
-    const body = encodeURIComponent(`Hello Shiv Enterprise,\n\nI want to enquire about placing a B2B wholesale order for:\n\n*Product:* ${product.name}\n*Category:* ${product.categoryDisplay}\n*Size:* ${product.size}\n*Requested Quantity:* (Min. Order 500 pcs)\n\nPlease provide corporate pricing tiers and shipping details.\n\nThank you!`);
+    const body = encodeURIComponent(`Hello Shiv Enterprise,\n\nI want to enquire about placing a B2B wholesale order for:\n\n*Product:* ${product.name}\n*Category:* ${product.categoryDisplay}\n*Size:* ${product.size}\n*Requested Quantity:* (Min. Order 250 pcs)\n\nPlease provide corporate pricing tiers and shipping details.\n\nThank you!`);
     return `mailto:SHIVEARTH25@GMAIL.COM?subject=${subject}&body=${body}`;
   }
 
@@ -236,13 +237,23 @@
         </div>
       `).join("");
 
-      const mediaHtml = product.image
-        ? `<img src="${product.image}" alt="${product.name}" class="product-card-img" />`
-        : getBagIllustrationSVG(product.category, 80);
+      // Support array of images or fallback SVG
+      let mediaHtml = "";
+      let hasGallery = false;
+      
+      if (Array.isArray(product.images) && product.images.length > 0) {
+        mediaHtml = `<img src="${product.images[0]}" alt="${product.name}" class="product-card-img" style="cursor: pointer;" title="Click to view full gallery" data-product-id="${product.id}" />`;
+        hasGallery = product.images.length > 1;
+      } else if (product.image) {
+        mediaHtml = `<img src="${product.image}" alt="${product.name}" class="product-card-img" style="cursor: pointer;" title="Click to view image" data-product-id="${product.id}" />`;
+      } else {
+        mediaHtml = getBagIllustrationSVG(product.category, 80);
+      }
 
       card.innerHTML = `
-        <div class="product-card-illustration">
+        <div class="product-card-illustration" ${product.image || product.images ? `data-product-id="${product.id}" style="cursor: pointer;" title="Click to view gallery"` : ""}>
           ${mediaHtml}
+          ${hasGallery ? '<div class="gallery-badge" style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; pointer-events: none;">🖼️ View Gallery</div>' : ''}
         </div>
         <h3 class="product-card-title">${product.name}</h3>
         <div class="product-card-size">Size: As per your Requirements</div>
@@ -252,7 +263,7 @@
         </div>
         
         <div class="product-card-moq">
-          📦 Minimum Order Quantity: 500 pcs
+          📦 Minimum Order Quantity: 250 pcs
         </div>
 
         <div class="product-card-actions">
@@ -278,10 +289,127 @@
     });
   }
 
+  // --- GALLERY MODAL CONTROLLER ---
+  let activeProduct = null;
+  let activeImageIndex = 0;
+
+  function initGalleryModal() {
+    const modal = document.getElementById("gallery-modal");
+    const modalImg = document.getElementById("modal-img");
+    const captionText = document.getElementById("modal-caption");
+    const thumbnailsContainer = document.getElementById("modal-thumbnails");
+    const closeBtn = document.getElementById("modal-close");
+    const prevBtn = document.getElementById("modal-prev");
+    const nextBtn = document.getElementById("modal-next");
+    const grid = document.getElementById("product-grid");
+
+    if (!modal || !grid) return;
+
+    function openModal(productId) {
+      const product = PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+
+      activeProduct = product;
+      activeImageIndex = 0;
+
+      // Build product image list
+      const imagesList = product.images || (product.image ? [product.image] : []);
+      if (imagesList.length === 0) return;
+
+      modal.style.display = "flex";
+      setTimeout(() => modal.classList.add("show"), 10);
+      updateModalImage();
+    }
+
+    function closeModal() {
+      modal.classList.remove("show");
+      setTimeout(() => {
+        modal.style.display = "none";
+        modalImg.src = "";
+      }, 300);
+    }
+
+    function updateModalImage() {
+      if (!activeProduct) return;
+      const imagesList = activeProduct.images || (activeProduct.image ? [activeProduct.image] : []);
+      
+      modalImg.style.opacity = 0;
+      setTimeout(() => {
+        modalImg.src = imagesList[activeImageIndex];
+        modalImg.style.opacity = 1;
+      }, 150);
+
+      captionText.textContent = `${activeProduct.name} (${activeImageIndex + 1} / ${imagesList.length})`;
+
+      // Render Thumbnails
+      thumbnailsContainer.innerHTML = "";
+      if (imagesList.length > 1) {
+        imagesList.forEach((imgSrc, idx) => {
+          const thumb = document.createElement("img");
+          thumb.src = imgSrc;
+          thumb.className = `thumb-img ${idx === activeImageIndex ? 'active' : ''}`;
+          thumb.addEventListener("click", () => {
+            activeImageIndex = idx;
+            updateModalImage();
+          });
+          thumbnailsContainer.appendChild(thumb);
+        });
+        prevBtn.style.display = "block";
+        nextBtn.style.display = "block";
+      } else {
+        prevBtn.style.display = "none";
+        nextBtn.style.display = "none";
+      }
+    }
+
+    function showNext() {
+      if (!activeProduct) return;
+      const imagesList = activeProduct.images || [activeProduct.image];
+      activeImageIndex = (activeImageIndex + 1) % imagesList.length;
+      updateModalImage();
+    }
+
+    function showPrev() {
+      if (!activeProduct) return;
+      const imagesList = activeProduct.images || [activeProduct.image];
+      activeImageIndex = (activeImageIndex - 1 + imagesList.length) % imagesList.length;
+      updateModalImage();
+    }
+
+    // Grid Click Delegation
+    grid.addEventListener("click", (e) => {
+      const trigger = e.target.closest("[data-product-id]");
+      if (trigger) {
+        const prodId = trigger.getAttribute("data-product-id");
+        openModal(prodId);
+      }
+    });
+
+    // Control triggers
+    closeBtn.addEventListener("click", closeModal);
+    nextBtn.addEventListener("click", showNext);
+    prevBtn.addEventListener("click", showPrev);
+
+    // Keyboard support
+    document.addEventListener("keydown", (e) => {
+      if (modal.classList.contains("show")) {
+        if (e.key === "Escape") closeModal();
+        if (e.key === "ArrowRight") showNext();
+        if (e.key === "ArrowLeft") showPrev();
+      }
+    });
+
+    // Close on background click
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) closeModal();
+    });
+  }
+
   // --- INITIALIZATION ---
   window.addEventListener("DOMContentLoaded", () => {
     // 1. Initial product load
     renderProducts("all");
+    initGalleryModal();
 
     // 2. Tab filtering triggers
     const tabs = document.querySelectorAll(".filter-tab");

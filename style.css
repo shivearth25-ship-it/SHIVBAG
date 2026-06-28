@@ -57,6 +57,14 @@ body.light-theme {
   --shadow-gold: 0 10px 25px rgba(212, 175, 55, 0.1);
 }
 
+body.light-theme .logo-text {
+  color: #b58f27; /* Deeper gold for visibility on white */
+}
+
+body.light-theme .logo-text .gold-text {
+  color: #b58f27;
+}
+
 /* Light Theme Component Specific Refinements */
 body.light-theme .top-info-bar {
   background-color: #f1f1f1;
@@ -168,11 +176,11 @@ h1, h2, h3, h4 {
   font-weight: 900;
   letter-spacing: 0.05em;
   font-size: 1.8rem;
-  color: var(--color-red);
+  color: var(--color-gold);
 }
 
 .logo-text .gold-text {
-  color: var(--color-red);
+  color: var(--color-gold);
 }
 
 .gold-text {
@@ -306,7 +314,7 @@ h1, h2, h3, h4 {
 }
 
 .main-header {
-  height: 80px;
+  height: 90px;
   background: rgba(5, 5, 5, 0.85);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -331,31 +339,22 @@ h1, h2, h3, h4 {
 }
 
 .logo-img {
-  height: 68px;
-  width: 68px;
+  height: 78px;
+  width: auto;
+  max-width: 100%;
   object-fit: contain;
-  background-color: #000000;
-  border-radius: 50%;
-  padding: 8px;
-  border: 1px solid rgba(212, 175, 55, 0.25);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  transition: all var(--transition-fast);
+  transition: transform var(--transition-fast);
 }
 
 .logo-img:hover {
-  transform: scale(1.08);
-  border-color: var(--color-gold);
-  box-shadow: 0 0 15px var(--color-gold-glow);
+  transform: scale(1.06);
 }
 
 .logo-img-footer {
-  height: 56px;
-  width: 56px;
+  height: 66px;
+  width: auto;
+  max-width: 100%;
   object-fit: contain;
-  background-color: #000000;
-  border-radius: 50%;
-  padding: 6px;
-  border: 1px solid rgba(212, 175, 55, 0.2);
 }
 
 .nav-menu {
@@ -1069,5 +1068,174 @@ h1, h2, h3, h4 {
   
   .capabilities-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* ==========================================================================
+   IMAGE GALLERY MODAL (LIGHTBOX)
+   ========================================================================== */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(5, 5, 5, 0.95);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity var(--transition-normal);
+}
+
+.modal.show {
+  display: flex;
+  opacity: 1;
+}
+
+.modal-close {
+  position: absolute;
+  top: 30px;
+  right: 40px;
+  color: var(--color-text-muted);
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 1010;
+  transition: color var(--transition-fast);
+}
+
+.modal-close:hover {
+  color: var(--color-gold);
+}
+
+.modal-content {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  max-width: 90%;
+  max-height: 85%;
+}
+
+.modal-image-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.02);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-dark);
+  width: 500px;
+  height: 400px;
+  overflow: hidden;
+}
+
+#modal-img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  transition: opacity 0.3s ease;
+}
+
+.modal-prev, .modal-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(15, 15, 15, 0.6);
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 1rem 1.2rem;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 50%;
+  z-index: 1005;
+  transition: all var(--transition-fast);
+}
+
+.modal-prev { left: -80px; }
+.modal-next { right: -80px; }
+
+.modal-prev:hover, .modal-next:hover {
+  background: var(--color-gold);
+  color: #000000;
+  border-color: var(--color-gold);
+  box-shadow: 0 0 15px var(--color-gold-glow);
+}
+
+.modal-caption {
+  font-family: 'Outfit', sans-serif;
+  margin-top: 1rem;
+  color: var(--color-text);
+  font-size: 1.1rem;
+  font-weight: 550;
+  text-align: center;
+}
+
+.modal-thumbnails {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.thumb-img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: var(--radius-sm);
+  border: 2px solid transparent;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.03);
+  padding: 4px;
+  transition: all var(--transition-fast);
+}
+
+.thumb-img:hover, .thumb-img.active {
+  border-color: var(--color-gold);
+  background: rgba(212, 175, 55, 0.05);
+}
+
+/* Light Theme overrides for modal */
+body.light-theme .modal {
+  background-color: rgba(250, 250, 250, 0.95);
+}
+
+body.light-theme .modal-image-container {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+body.light-theme .modal-prev, body.light-theme .modal-next {
+  background: rgba(240, 240, 240, 0.8);
+  border-color: rgba(0, 0, 0, 0.08);
+  color: #111111;
+}
+
+body.light-theme .modal-prev:hover, body.light-theme .modal-next:hover {
+  background: var(--color-gold);
+  color: #000000;
+}
+
+body.light-theme .thumb-img {
+  background: #ffffff;
+  border-color: rgba(0, 0, 0, 0.05);
+}
+
+/* Responsive modal */
+@media (max-width: 800px) {
+  .modal-prev { left: 10px; }
+  .modal-next { right: 10px; }
+  .modal-image-container {
+    width: 320px;
+    height: 320px;
   }
 }
