@@ -81,7 +81,7 @@ body.light-theme .hero-section {
 }
 
 body.light-theme .hero-section::before {
-  opacity: 0.08;
+  opacity: 0.20; /* Increased opacity for clear visibility in light theme */
 }
 
 body.light-theme .hero-badge {
@@ -110,7 +110,7 @@ body.light-theme .main-footer {
 }
 
 body.light-theme .main-footer::before {
-  opacity: 0.06;
+  opacity: 0.15; /* Increased opacity for clear visibility in light theme */
 }
 
 body.light-theme .footer-bottom {
@@ -402,8 +402,8 @@ h1, h2, h3, h4 {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: url('fabric_collage.png') no-repeat center center/cover;
-  opacity: 0.15;
+  background: url('contact_bg.png') no-repeat center center/cover;
+  opacity: 0.35; /* Swapped background with contact_bg and increased opacity */
   z-index: 1;
   pointer-events: none;
 }
@@ -870,8 +870,8 @@ h1, h2, h3, h4 {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
-  background: url('contact_bg.png') no-repeat center center/cover;
-  opacity: 0.12;
+  background: url('fabric_collage.png') no-repeat center center/cover;
+  opacity: 0.30; /* Swapped background with fabric_collage and increased opacity */
   z-index: 1;
   pointer-events: none;
 }
