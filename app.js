@@ -253,7 +253,6 @@
       card.innerHTML = `
         <div class="product-card-illustration" ${product.image || product.images ? `data-product-id="${product.id}" style="cursor: pointer;" title="Click to view gallery"` : ""}>
           ${mediaHtml}
-          ${hasGallery ? '<div class="gallery-badge" style="position: absolute; bottom: 8px; right: 8px; background: rgba(0,0,0,0.7); color: #fff; padding: 2px 6px; font-size: 0.7rem; border-radius: 4px; pointer-events: none;">🖼️ View Gallery</div>' : ''}
         </div>
         <h3 class="product-card-title">${product.name}</h3>
         <div class="product-card-size">Size: As per your Requirements</div>
